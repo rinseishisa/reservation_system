@@ -11,14 +11,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import	java.util.ArrayList;									// @1
+import	java.util.List;											// @1
 
 public class MainFrame extends Frame implements ActionListener, WindowListener{
 	ReservationControl	reservationControl;						// ReservationControlクラスのインスタンス生成
 	// パネルインスタンスの生成
 	Panel	panelNorth;											// 上部パネル
+	Panel	panelNorthSub1;										//   @1 上部パネルの上
+	Panel	panelNorthSub2;										//   @1 上部パネルの下
 	Panel	panelCenter;										// 中央パネル
 	// ボタンインスタンスの生成
 	Button	buttonLog;											// ログイン・ログアウトボタン
+	Button	buttonExplanation;									// @1 教室概要ボタン
+	// @1 コンボボックスのインスタンス生成
+	ChoiceFacility	choiceFacility;								// @1 教室選択用コンボボックス
 	// テキストフィールドのインスタンス生成
 	TextField	tfLoginID;										// ログインIDを表示するテキストフィールド
 	// テキストエリアのインスタンス生成
@@ -30,7 +37,13 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 
 		// ボタンの生成
 		buttonLog = new Button( " ログイン ");					// ログインボタン
-
+		buttonExplanation = new Button( "教室概要");			// @1 教室選択ボタン
+																// @1
+		// @1 教室選択用コンボボックスの生成
+		List<String> facilityId = new ArrayList<String>();		// @1 全てのfacilityIDを入れるリスト
+		facilityId 		= rc.getFacilityId();					// @1 全facilityIDを読出し，リストに入れる
+		choiceFacility	= new ChoiceFacility( facilityId);		// @1 教室選択用コンボボックスのインスタンス生成
+		
 		// ログインID用表示ボックスの生成
 		tfLoginID = new TextField( "未ログイン", 10);
 		tfLoginID.setEditable( false);
@@ -38,12 +51,31 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		// 上中下のパネルを使うため，レイアウトマネージャーにBorderLayoutを設定
 		setLayout( new BorderLayout());
 		
-		// 上部パネルに部品を配置
-		panelNorth = new Panel();								// 上部パネルインスタンスを生成
-		panelNorth.add( new Label( "教室予約システム"));		// タイトルラベルを付加
-		panelNorth.add( buttonLog);								// ログインボタンを付加
-		panelNorth.add( new Label( "　　　　　　ログインID:"));	// ログインIDラベルを付加
-		panelNorth.add( tfLoginID);								// ログインID表示テキストフィールドを付加
+		// @1 上部パネルの上パネルに「教室予約システム」というラベルと【ログイン】ボタン等を追加
+		panelNorthSub1 = new Panel();							// @1 NorthSub1のパネルインスタンスを生成
+		panelNorthSub1.add( new Label( "教室予約システム　"));	// @1 タイトルラベルを付加
+		panelNorthSub1.add( buttonLog);							// @1 ログインボタンを付加
+		panelNorthSub1.add( new Label( "　　　　　　ログインID："));	// @1 ログインIDタイトルラベルを付加
+		panelNorthSub1.add( tfLoginID);							// @1 ログインID表示用テキストフィールドを付加
+																// @1
+		// @1 上部パネルの下パネルに教室選択及び教室概要ボタンを追加
+		panelNorthSub2 = new Panel();							// @1 NorthSub2のパネルインスタンスを生成
+		panelNorthSub2.add( new Label( "教室"));				// @1 教室選択コンボボックスのラベルを付加
+		panelNorthSub2.add( choiceFacility);					// @1 教室選択コンボボックスを付加
+		panelNorthSub2.add( new Label( "　"));					// @1 コンボボックスとボタンの隙間をラベルで付加
+		panelNorthSub2.add( buttonExplanation);					// @1 教室概要表示ボタンを付加
+																// @1
+		// @1 上部パネルに上下2つのパネルを追加
+		panelNorth = new Panel( new BorderLayout());			// @1 panelNorthをBorderLayoutのパネルで生成
+		panelNorth.add( panelNorthSub1, BorderLayout.NORTH);	// @1 panelNorthSub1を上部に付加
+		panelNorth.add( panelNorthSub2, BorderLayout.CENTER);	// @1 panelNorthSub2を下部に付加
+																// @1
+// @1		// 上部パネルに部品を配置
+// @1		panelNorth = new Panel();								// 上部パネルインスタンスを生成
+// @1		panelNorth.add( new Label( "教室予約システム"));		// タイトルラベルを付加
+// @1		panelNorth.add( buttonLog);								// ログインボタンを付加
+// @1		panelNorth.add( new Label( "　　　　　　ログインID:"));	// ログインIDラベルを付加
+// @1		panelNorth.add( tfLoginID);								// ログインID表示テキストフィールドを付加
 		
 		// MainFrameに上部パネルを追加
 		add( panelNorth, BorderLayout.NORTH);
@@ -58,6 +90,7 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		
 		// Listenerの追加
 		buttonLog.addActionListener( this);						// ActionListenerにログインボタンを追加
+		buttonExplanation.addActionListener( this);				// @1 ActionListenerに教室概要ボタンを追加
 		addWindowListener( this);								// WindowListenerを追加
 	}
 
@@ -108,8 +141,10 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		String	result = new String();
 		if( e.getSource() == buttonLog) {						// 押下ボタンがログインボタンの時
 			result = reservationControl.loginLogout( this);		// loginLogoutメソッドを実行
-		}
-		textMessage.setText( result);							// loginLogoutメソッドの戻り値をテキストエリアに表示
+		} else if( e.getSource() == buttonExplanation) {		// @1 押下ボタンが教室概要ボタンの時
+			result = reservationControl.getFacilityExplanation( choiceFacility.getSelectedItem());	// @1
+		}														// @1 getFacilityExplanationメソッドを呼びだす
+		textMessage.setText( result);							// @1 メソッドの戻り値をテキストエリアに表示
 	}
 
 }
