@@ -315,4 +315,82 @@ public class ReservationControl {
 		}																			// @2
 		return	abailableTime;														// @2 open_time,close_timeの「時」を返す（エラーなら{0,0}が返る
 	}
+	
+////@3 予約確認ボタン押下時の処理を行うメソッド
+	public	String	getReservation( MainFrame frame) {								// @2
+		String	res 			= "";
+		String  reservationID 	= "";
+		String  facilityID 		= "";
+		String  userID 			= "";
+		String  date 			= "";
+		String  day 			= "";
+		String  startTime 		= "";
+		String  endTime 		= "";												// @2
+																	// @2 ログイン済みの場合
+		// @3 予約確認画面生成
+		GetReservationDialog	rd = new GetReservationDialog( frame, this);			// @2
+																				// @2
+		// @3 予約確認画面を表示
+		rd.setVisible( true);													// @3 予約確認画面を表示（ここで制御がrdインスタンスに移る）
+		if( rd.canceled) {														// @3 予約確認操作をキャンセルしたとき
+			return	res;														// @3 予約確認終了
+		}								
+
+		// @3 予約確認操作を正常実行したとき
+		// @3 予約確認画面から年月日を取得
+		String	ryear_str	= rd.tfYear.getText();								// @3 入力された年情報をテキストで取得
+		String	rmonth_str	= rd.tfMonth.getText();								// @3 選択された月情報をテキストで取得
+		String	rday_str	= rd.tfDay.getText();								// @3 選択された日情報をテキストで取得
+		// @3 月と日が一桁だったら，前に0を付加
+		if( rmonth_str.length() == 1) {											// @3 月の文字数が1桁の時
+			rmonth_str = "0" + rmonth_str;										// @3 　月の先頭に"0"を付加
+		}																		// @3
+		if( rday_str.length() == 1) {											// @3 日の文字数が1桁の時
+			rday_str = "0" + rday_str;											// @3 　日の先頭に"0"を付加
+		}																		// @3
+																				// @3
+		// @3 入力された日付が正しいか，以下2点をチェック
+		// @3   入力された文字が半角数字になっているか．
+		// @3   日付として成立している値か
+		try {																	// @3
+			DateFormat	df = new SimpleDateFormat( "yyyy-MM-dd");				// @3 日付のフォーマットを定義
+			df.setLenient( false);												// @3 日付フォーマットのチェックを厳格化
+			// @3 入力された日付を文字列に変換したものと，SimpleDateFormatに当てはめて同じ値になるかをチェック
+			String	inData = ryear_str + "-" + rmonth_str + "-" + rday_str;		// @3 入力日付を文字列形式でyyyy-MM-dd形式に合成
+			String	convData = df.format( df.parse( inData));					// @3 入力日付をSimpleDateFormat形式に変換
+			if( !inData.equals( convData)) {									// @3 2つの文字列が等しくない時．
+				res	= "日付の書式を修正して下さい。（年：西暦4桁，月：1～12，日：1～31(各月月末まで))";	// @3 エラー文を設定し，新規予約終了
+				return	res;													// @3
+			}																	// @3
+		} catch( ParseException p) {											// @3 年月日の文字が誤っていてSimpleDateFormatに変換不可の時
+			res = "日付の値を修正して下さい。";									// @3 数字以外，入力されていないことを想定したエラー処理
+			return	res;														// @3
+		}																		// @3
+																				// @3
+		// @3 予約確認画面から教室名を取得
+		String	facility	= rd.choiceFacility.getSelectedItem();	// @3
+		String	rdate = ryear_str + "-" + rmonth_str + "-" + rday_str;
+		connectDB();													// @1 MySQLに接続
+		try {															// @1
+			String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "';";	// @1
+			ResultSet	rs = sqlStmt.executeQuery( sql);				// @1 選択された教室IDと同じレコードを抽出
+			if( rs.next()) {											// @1 1件目のレコードを取得
+				reservationID	= rs.getString( "reservation_id");				// @1 explanation属性データを取得
+				facilityID = rs.getString( "facility_id");				// @1 open_time属性データの取得
+				userID	= rs.getString( "user_id");	
+				date = rs.getString( "date");
+				day = rs.getString("day");
+				startTime = rs.getString("start_time");
+				endTime = rs.getString("end_time");
+				res = "予約番号:" +reservationID + "  教室番号：" + facilityID + "  ユーザーID：" + userID + "  予約実行時間：" + date + "  予約日：" + day + "  利用可能時間：" + startTime.substring( 0,5) + "～" + endTime.substring( 0,5);	// @1
+			} else {													// @1 該当するレコードが無い場合
+				res = "予約日が無効です。";							// @1 結果表示エリアに表示する文言をセット
+			}															// @1
+		} catch( Exception e) {											// @1 例外発生時
+			res = "予期しないエラーが発生しました。";
+			e.printStackTrace();										// @1 StackTraceをコンソールに表示
+		}																// @1													// @2	// @2 途中で予期しない例外が発生した場合											// @2
+		closeDB();														// @2 MySQLとの接続を切る																	// @2																										// @2
+	    return res;																	// @2
+	}					
 }
