@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.text.DateFormat;											// @2
 import java.text.ParseException;										// @2
 import java.text.SimpleDateFormat;										// @2
+import java.time.LocalDate;
 import	java.util.ArrayList;											// @1
 import java.util.Calendar;												// @2
 
@@ -289,7 +290,7 @@ public class ReservationControl {
 			}																		// @2
 		// @2 未ログイン状態の場合
 		} else {																	// @2
-			res = "ログインして下さい。";											// @2
+			res = "ログインして下さい。";											   // @2
 		}																			// @2
 		return res;																	// @2
 	}																				// @2
@@ -317,19 +318,19 @@ public class ReservationControl {
 	}
 	
 ////@3 予約確認ボタン押下時の処理を行うメソッド
-	public	String	getReservation( MainFrame frame) {								// @2
-		String	res 			= "";
-		String  reservationID 	= "";
-		String  facilityID 		= "";
-		String  userID 			= "";
-		String  date 			= "";
-		String  day 			= "";
-		String  startTime 		= "";
-		String  endTime 		= "";												// @2
-																	// @2 ログイン済みの場合
+	public	String	getReservation( MainFrame frame) {		
+		String	res 			= "";								// @3 戻り値変数の初期化
+//		String  reservationID 	= "";								// @3 reservation_idを入れる変数の宣言
+//		String  facilityID 		= "";								// @3 facility_idを入れる変数の宣言
+//		String  userID 			= "";								// @3 user_idを入れる変数の宣言
+//		String  date 			= "";								// @3 dateを入れる変数の宣言
+//		String  day 			= "";								// @3 dayを入れる変数の宣言
+//		String  startTime 		= "";								// @3 start_timeを入れる変数の宣言
+//		String  endTime 		= "";								// @3 end_timeを入れる変数の宣言
+
 		// @3 予約確認画面生成
-		GetReservationDialog	rd = new GetReservationDialog( frame, this);			// @2
-																				// @2
+		GetReservationDialog	rd = new GetReservationDialog( frame, this);
+																			
 		// @3 予約確認画面を表示
 		rd.setVisible( true);													// @3 予約確認画面を表示（ここで制御がrdインスタンスに移る）
 		if( rd.canceled) {														// @3 予約確認操作をキャンセルしたとき
@@ -363,34 +364,80 @@ public class ReservationControl {
 				return	res;													// @3
 			}																	// @3
 		} catch( ParseException p) {											// @3 年月日の文字が誤っていてSimpleDateFormatに変換不可の時
-			res = "日付の値を修正して下さい。";									// @3 数字以外，入力されていないことを想定したエラー処理
+			res = "日付の値を修正して下さい。";						                // @3 数字以外，入力されていないことを想定したエラー処理
 			return	res;														// @3
 		}																		// @3
 																				// @3
 		// @3 予約確認画面から教室名を取得
 		String	facility	= rd.choiceFacility.getSelectedItem();	// @3
 		String	rdate = ryear_str + "-" + rmonth_str + "-" + rday_str;
-		connectDB();													// @1 MySQLに接続
-		try {															// @1
+		connectDB();													// @3 MySQLに接続
+		try {															// @3
 			String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "';";	// @1
-			ResultSet	rs = sqlStmt.executeQuery( sql);				// @1 選択された教室IDと同じレコードを抽出
-			if( rs.next()) {											// @1 1件目のレコードを取得
-				reservationID	= rs.getString( "reservation_id");				// @1 explanation属性データを取得
-				facilityID = rs.getString( "facility_id");				// @1 open_time属性データの取得
-				userID	= rs.getString( "user_id");	
-				date = rs.getString( "date");
-				day = rs.getString("day");
-				startTime = rs.getString("start_time");
-				endTime = rs.getString("end_time");
-				res = "予約番号:" +reservationID + "  教室番号：" + facilityID + "  ユーザーID：" + userID + "  予約実行時間：" + date + "  予約日：" + day + "  利用可能時間：" + startTime.substring( 0,5) + "～" + endTime.substring( 0,5);	// @1
-			} else {													// @1 該当するレコードが無い場合
-				res = "予約日が無効です。";							// @1 結果表示エリアに表示する文言をセット
-			}															// @1
-		} catch( Exception e) {											// @1 例外発生時
+			ResultSet	rs = sqlStmt.executeQuery( sql);				// @3 選択された教室IDと同じレコードを抽出
+			if( rs.next()) {											// @3 1件目のレコードを取得
+//				reservationID	= rs.getString( "reservation_id");		// @3 reservation_id属性データを取得
+//				facilityID = rs.getString( "facility_id");				// @3 facility_id属性データの取得
+//				userID	= rs.getString( "user_id");						// @3 user_id属性データの取得
+//				date = rs.getString( "date");							// @3 date属性データの取得
+//				day = rs.getString("day");								// @3 day属性データの取得
+//				startTime = rs.getString("start_time");					// @3 start_time属性データの取得
+//				endTime = rs.getString("end_time");						// @3 end_time属性データの取得
+				// @3 結果表示エリアに表示する文言をセット(変数を使用する場合)
+//				res = "予約番号:" +reservationID + "  教室番号：" + facilityID + "  ユーザーID：" + userID + "  予約実行時間：" + date + "  予約日：" + day + "  利用可能時間：" + startTime.substring( 0,5) + "～" + endTime.substring( 0,5);	// @1
+				// @3 結果表示エリアに表示する文言をセット(直接ResultSetから取得した値を使用する場合)
+				res	= "予約番号:" + rs.getString( "reservation_id") + "  教室番号：" + rs.getString( "facility_id") + "  ユーザーID：" + rs.getString( "user_id") 
+				+ "  予約実行時間：" + rs.getString( "date") + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + rs.getString("start_time") + "～" + rs.getString( "end_time") + "\n";
+				while( rs.next()) {
+					// @3 予約が二つ以上ある場合の結果表示エリアに表示する文言をセット
+					res	+= "予約番号:" + rs.getString( "reservation_id") + "  教室番号：" + rs.getString( "facility_id") + "  ユーザーID：" + rs.getString( "user_id") 
+						+ "  予約実行時間：" + rs.getString( "date") + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + rs.getString("start_time") + "～" + rs.getString( "end_time") + "\n";
+				}
+			} else {													// @3 該当するレコードが無い場合
+				res = "予約日が無効です。";								   // @3 結果表示エリアに表示する文言をセット
+			}															// @3
+		} catch( Exception e) {											// @3 例外発生時
 			res = "予期しないエラーが発生しました。";
-			e.printStackTrace();										// @1 StackTraceをコンソールに表示
-		}																// @1													// @2	// @2 途中で予期しない例外が発生した場合											// @2
-		closeDB();														// @2 MySQLとの接続を切る																	// @2																										// @2
-	    return res;																	// @2
-	}					
+			e.printStackTrace();										// @3 StackTraceをコンソールに表示
+		}																// @3
+		closeDB();														// @3 MySQLとの接続を切る
+	    return res;														// @3 結果表示内容をMainFrameに返す。
+	}
+	
+//// @4 自己予約確認ボタン押下時の処理を行うメソッド
+	public String getMyReservation( MainFrame frame) {
+		String res = "";												// @4 結果を入れる戻り値変数を初期化
+		
+		if(flagLogin) {													// @4 ログイン状態を確認
+			// @4 ログイン済みの場合
+			connectDB();												// @4 MySQLに接続
+			try {
+				System.out.println(LocalDate.now());					// @4 今日の日付をコンソールに表示（テスト用）
+				// @4 sql文作成 条件文：user_idが合致、かつ、予約日が今日以降
+				String sql = "SELECT * FROM db_reservation.reservation WHERE user_id = '" + reservationUserID + "' AND day >= '" + LocalDate.now() +"';";
+				ResultSet	rs = sqlStmt.executeQuery( sql);			// @4 MySQLに送信
+				if(rs.next()) {											// @4 １件目のレコードを取得
+					// @4 結果表示エリアに表示する文言をセット
+					res	= "予約番号:" + rs.getString( "reservation_id") + "  教室番号：" + rs.getString( "facility_id") + "  ユーザーID：" + rs.getString( "user_id") 
+						+ "  予約実行時間：" + rs.getString( "date") + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + rs.getString("start_time") + "～" + rs.getString( "end_time") + "\n";
+					while( rs.next()) {
+						// @4 予約が二つ以上ある場合の結果表示エリアに表示する文言をセット
+						res	+= "予約番号:" + rs.getString( "reservation_id") + "  教室番号：" + rs.getString( "facility_id") + "  ユーザーID：" + rs.getString( "user_id") 
+							+ "  予約実行時間：" + rs.getString( "date") + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + rs.getString("start_time") + "～" + rs.getString( "end_time") + "\n";
+					}
+				} else {
+					// @4 現在以降の予約がなかった場合
+					res = "現在以降の予約はありません。";
+				}
+			} catch (Exception e) {										// @4 例外発生時
+				res = "予期しないエラーが発生しました。";				// @4 StackTraceをコンソールに表示
+				e.printStackTrace();
+			}
+		}else {
+			// @4 未ログイン時
+			res = "ログインして下さい。";
+		}
+		closeDB();														// @4 MySQLとの接続を切る
+		return res;														// @4 結果表示内容をMainFrameに返す。
+	}
 }
