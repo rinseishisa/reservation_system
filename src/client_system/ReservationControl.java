@@ -419,11 +419,11 @@ public class ReservationControl {
 				if(rs.next()) {											// @4 １件目のレコードを取得
 					// @4 結果表示エリアに表示する文言をセット
 					res	= "予約番号:" + rs.getString( "reservation_id") + "  教室番号：" + rs.getString( "facility_id") + "  ユーザーID：" + rs.getString( "user_id") 
-						+ "  予約実行時間：" + rs.getString( "date") + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + rs.getString("start_time") + "～" + rs.getString( "end_time") + "\n";
+						+ "  予約実行時間：" + rs.getString( "date").substring( 0,19) + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + rs.getString("start_time").substring( 0,5) + "～" + rs.getString( "end_time").substring( 0,5) + "\n";
 					while( rs.next()) {
 						// @4 予約が二つ以上ある場合の結果表示エリアに表示する文言をセット
 						res	+= "予約番号:" + rs.getString( "reservation_id") + "  教室番号：" + rs.getString( "facility_id") + "  ユーザーID：" + rs.getString( "user_id") 
-							+ "  予約実行時間：" + rs.getString( "date") + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + rs.getString("start_time") + "～" + rs.getString( "end_time") + "\n";
+							+ "  予約実行時間：" + rs.getString( "date").substring( 0,19) + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + rs.getString("start_time").substring( 0,5) + "～" + rs.getString( "end_time").substring( 0,5) + "\n";
 					}
 				} else {
 					// @4 現在以降の予約がなかった場合
