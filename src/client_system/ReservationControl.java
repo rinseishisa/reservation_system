@@ -182,7 +182,8 @@ public class ReservationControl {
 				String	inData = ryear_str + "-" + rmonth_str + "-" + rday_str;		// @2 入力日付を文字列形式でyyyy-MM-dd形式に合成
 				String	convData = df.format( df.parse( inData));					// @2 入力日付をSimpleDateFormat形式に変換
 				if( !inData.equals( convData)) {									// @2 2つの文字列が等しくない時．
-					res	= "日付の書式を修正して下さい。（年：西暦4桁，月：1～12，日：1～31(各月月末まで))";	// @2 エラー文を設定し，新規予約終了
+					//res	= "日付の書式を修正して下さい。（年：西暦4桁，月：1～12，日：1～31(各月月末まで))";	// @2 エラー文を設定し，新規予約終了
+					res = "全角で入力されています。半角で入力してください。";
 					return	res;													// @2
 				}																	// @2
 			} catch( ParseException p) {											// @2 年月日の文字が誤っていてSimpleDateFormatに変換不可の時
@@ -360,7 +361,8 @@ public class ReservationControl {
 			String	inData = ryear_str + "-" + rmonth_str + "-" + rday_str;		// @3 入力日付を文字列形式でyyyy-MM-dd形式に合成
 			String	convData = df.format( df.parse( inData));					// @3 入力日付をSimpleDateFormat形式に変換
 			if( !inData.equals( convData)) {									// @3 2つの文字列が等しくない時．
-				res	= "日付の書式を修正して下さい。（年：西暦4桁，月：1～12，日：1～31(各月月末まで))";	// @3 エラー文を設定し，新規予約終了
+				//res	= "日付の書式を修正して下さい。（年：西暦4桁，月：1～12，日：1～31(各月月末まで))";	// @3 エラー文を設定し，新規予約終了
+				res = "全角で入力されています。半角で入力してください。";
 				return	res;													// @3
 			}																	// @3
 		} catch( ParseException p) {											// @3 年月日の文字が誤っていてSimpleDateFormatに変換不可の時
