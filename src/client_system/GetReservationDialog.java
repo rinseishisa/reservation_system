@@ -35,7 +35,7 @@ public class GetReservationDialog extends Dialog implements ActionListener, Wind
 	
 	public	GetReservationDialog( Frame owner, ReservationControl rc) {
 		// 基底クラスのコンストラクタを呼び出す
-		super( owner, "予約確認", true);
+		super( owner, "予約状況確認", true);
 		
 		this.rc = rc;							// ReservationControlのインスタンスを保存
 		// 初期値キャンセルを設定

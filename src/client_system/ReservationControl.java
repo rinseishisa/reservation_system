@@ -376,22 +376,22 @@ public class ReservationControl {
 			String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "';";	// @1
 			ResultSet	rs = sqlStmt.executeQuery( sql);				// @3 選択された教室IDと同じレコードを抽出
 			if( rs.next()) {											// @3 1件目のレコードを取得
-//				reservationID	= rs.getString( "reservation_id");		// @3 reservation_id属性データを取得
-//				facilityID = rs.getString( "facility_id");				// @3 facility_id属性データの取得
-//				userID	= rs.getString( "user_id");						// @3 user_id属性データの取得
-//				date = rs.getString( "date");							// @3 date属性データの取得
-//				day = rs.getString("day");								// @3 day属性データの取得
-//				startTime = rs.getString("start_time");					// @3 start_time属性データの取得
-//				endTime = rs.getString("end_time");						// @3 end_time属性データの取得
+//				String reservationID	= rs.getString( "reservation_id");		// @3 reservation_id属性データを取得
+//				String facilityID = rs.getString( "facility_id");				// @3 facility_id属性データの取得
+//				String userID	= rs.getString( "user_id");						// @3 user_id属性データの取得
+				String date = rs.getString( "date");							// @3 date属性データの取得
+//				String day = rs.getString("day");								// @3 day属性データの取得
+				String startTime = rs.getString("start_time");					// @3 start_time属性データの取得
+				String endTime = rs.getString("end_time");						// @3 end_time属性データの取得
 				// @3 結果表示エリアに表示する文言をセット(変数を使用する場合)
 //				res = "予約番号:" +reservationID + "  教室番号：" + facilityID + "  ユーザーID：" + userID + "  予約実行時間：" + date + "  予約日：" + day + "  利用可能時間：" + startTime.substring( 0,5) + "～" + endTime.substring( 0,5);	// @1
 				// @3 結果表示エリアに表示する文言をセット(直接ResultSetから取得した値を使用する場合)
 				res	= "予約番号:" + rs.getString( "reservation_id") + "  教室番号：" + rs.getString( "facility_id") + "  ユーザーID：" + rs.getString( "user_id") 
-				+ "  予約実行時間：" + rs.getString( "date") + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + rs.getString("start_time") + "～" + rs.getString( "end_time") + "\n";
+				+ "  予約実行時間：" + date.substring( 0,19) + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + startTime.substring( 0,5) + "～" + endTime.substring( 0,5) + "\n";
 				while( rs.next()) {
 					// @3 予約が二つ以上ある場合の結果表示エリアに表示する文言をセット
 					res	+= "予約番号:" + rs.getString( "reservation_id") + "  教室番号：" + rs.getString( "facility_id") + "  ユーザーID：" + rs.getString( "user_id") 
-						+ "  予約実行時間：" + rs.getString( "date") + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + rs.getString("start_time") + "～" + rs.getString( "end_time") + "\n";
+						+ "  予約実行時間：" + date.substring( 0,19) + "  予約日：" + rs.getString( "day") + "  利用可能時間：" + startTime.substring( 0,5) + "～" + endTime.substring( 0,5) + "\n";
 				}
 			} else {													// @3 該当するレコードが無い場合
 				res = "予約日が無効です。";								   // @3 結果表示エリアに表示する文言をセット
