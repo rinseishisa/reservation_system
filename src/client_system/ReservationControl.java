@@ -373,7 +373,7 @@ public class ReservationControl {
 		String	rdate = ryear_str + "-" + rmonth_str + "-" + rday_str;
 		connectDB();													// @3 MySQLに接続
 		try {															// @3
-			String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "' ORDER BY day, start_time;";	// @1
+			String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "' ORDER BY start_time;";	// @1
 			ResultSet	rs = sqlStmt.executeQuery( sql);				// @3 選択された教室IDと同じレコードを抽出
 			if( rs.next()) {											// @3 1件目のレコードを取得
 //				String reservationID	= rs.getString( "reservation_id");		// @3 reservation_id属性データを取得
