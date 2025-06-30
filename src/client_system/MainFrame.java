@@ -28,6 +28,7 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 	Button	buttonReservation;									// @2 新規予約ボタン
 	Button  buttonGetReservation;								// @3 予約確認ボタン
 	Button	buttonGetMyReservation;								// @4 自己予約確認ボタン
+	Button	buttonCancelReservation;							// @5 予約キャンセルボタン
 	// @1 コンボボックスのインスタンス生成
 	ChoiceFacility	choiceFacility;								// @1 教室選択用コンボボックス
 	// テキストフィールドのインスタンス生成
@@ -45,7 +46,8 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		buttonReservation = new Button( "新規予約");			// @2 新規予約ボタン
 		buttonGetReservation = new Button("予約確認");			// @3 予約確認ボタン
 		buttonGetMyReservation = new Button("自己予約確認");	// @4 自己予約確認ボタン
-																// @1
+		buttonCancelReservation = new Button("予約キャンセル");	// @5 予約キャンセルボタン
+		
 		// @1 教室選択用コンボボックスの生成
 		List<String> facilityId = new ArrayList<String>();		// @1 全てのfacilityIDを入れるリスト
 		facilityId 		= rc.getFacilityId();					// @1 全facilityIDを読出し，リストに入れる
@@ -102,6 +104,8 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		panelSouth.add( buttonReservation);						// @2 新規予約ボタンを付加
 		panelSouth.add( new Label( "　"));						// @4 新規予約ボタンと自己予約確認ボタンの隙間をラベルで付加
 		panelSouth.add( buttonGetMyReservation);				// @4 自己予約確認ボタンを付加
+		panelSouth.add( new Label( "　"));						// @5 自己予約確認ボタンと予約キャンセルボタンの隙間をラベルで付加
+		panelSouth.add( buttonCancelReservation);				// @5 予約キャンセルボタンを付加
 		// @2 MainFrameに下部パネルを追加
 		add( panelSouth, BorderLayout.SOUTH);
 		
@@ -111,6 +115,7 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		buttonReservation.addActionListener( this);				// @2 ActionListenerに新規予約ボタンを追加
 		buttonGetReservation.addActionListener( this);			// @3 ActionListenerに予約確認ボタンを追加
 		buttonGetMyReservation.addActionListener( this);		// @4 ActionListenerに自己予約確認ボタンを追加
+		buttonCancelReservation.addActionListener( this);		// @5 ActionListenerに予約キャンセルボタンを追加
 		addWindowListener( this);								// WindowListenerを追加
 	}
 
@@ -163,17 +168,20 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		if( e.getSource() == buttonLog) {
 			result = reservationControl.loginLogout( this);
 		// @1 押下ボタンが教室概要ボタンの時，getFacilityExplanationメソッドを実行
-		} else if( e.getSource() == buttonExplanation) {		// @1
+		} else if( e.getSource() == buttonExplanation) {			// @1
 			result = reservationControl.getFacilityExplanation( choiceFacility.getSelectedItem());	// @1
 		// @2 押下ボタンが新規予約ボタンの時，makeReservationメソッドを実行
-		} else if( e.getSource() == buttonReservation) {		// @2
-			result = reservationControl.makeReservation( this);	// @2
+		} else if( e.getSource() == buttonReservation) {			// @2
+			result = reservationControl.makeReservation( this);		// @2
 		// @3 押下ボタンが予約確認ボタンの時，getReservationメソッドを実行
 		} else if(e.getSource() == buttonGetReservation) {
-			result = reservationControl.getReservation( this);  // @3
+			result = reservationControl.getReservation( this);  	// @3
 		// @4 押下ボタンが自己予約確認ボタンの時、GetMyReservationメソッドを実行
-		} else if(e.getSource() == buttonGetMyReservation) {	// @4
-			result = reservationControl.getMyReservation( this);			// @4
+		} else if(e.getSource() == buttonGetMyReservation) {		// @4
+			result = reservationControl.getMyReservation( this);	// @4
+		// @5 押下ボタンが予約キャンセルボタンの時、cancelReservationメソッドを実行
+		} else if(e.getSource() == buttonCancelReservation) {		// @5
+			result = reservationControl.cancelReservation( this);	// @5
 		}
 		textMessage.setText( result);							// メソッドの戻り値をテキストエリアに表示
 	}

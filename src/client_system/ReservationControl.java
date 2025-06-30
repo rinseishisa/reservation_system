@@ -373,7 +373,7 @@ public class ReservationControl {
 		String	rdate = ryear_str + "-" + rmonth_str + "-" + rday_str;
 		connectDB();													// @3 MySQLに接続
 		try {															// @3
-			String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "' ORDER BY start_time;";	// @1
+			String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "' ORDER BY day, start_time;";	// @1
 			ResultSet	rs = sqlStmt.executeQuery( sql);				// @3 選択された教室IDと同じレコードを抽出
 			if( rs.next()) {											// @3 1件目のレコードを取得
 //				String reservationID	= rs.getString( "reservation_id");		// @3 reservation_id属性データを取得
@@ -442,5 +442,129 @@ public class ReservationControl {
 		}
 		closeDB();														// @4 MySQLとの接続を切る
 		return res;														// @4 結果表示内容をMainFrameに返す。
+	}
+	
+//// @5 予約キャンセルボタン押下時の処理を行うメソッド
+	public String cancelReservation( MainFrame frame) {
+		String res = "";												// @5 結果を入れる戻り値変数を初期化
+		
+		if(flagLogin) {													// @5 ログイン状態を確認
+			// @5 ログイン状態の場合
+			
+			connectDB();												// @5 MySQLに接続
+			try {
+				// @5 ユーザに削除できる予約があるかどうか調べる
+				// @5 ユーザが予約している予約情報を取得するクエリ作成
+				String sql = "SELECT * FROM db_reservation.reservation WHERE user_id = '" + reservationUserID + "' AND day > '" + LocalDate.now() + "';";
+				ResultSet	rs	= sqlStmt.executeQuery( sql);
+				if(rs.next()) {
+					while( rs.next()) {
+						
+					}
+					
+					// @5 予約キャンセル画面生成
+					CancelReservationDialog	rd = new CancelReservationDialog(frame, this);
+					
+					// @5 予約キャンセル画面を表示
+					rd.setVisible( true);
+					if(rd.canceled) {
+						return res;
+					}
+					
+					// @5 選択された予約情報をテキストで取得
+					String	cancelReservationId_str	= rd.choiceReservationId.getSelectedItem();
+					
+					try {
+						// @5 削除する予約情報を結果表示用に確保しておく
+						// @5 選択された予約番号の予約情報を取得するクエリを作成
+						sql	= "SELECT * FROM db_reservation.reservation WHERE reservation_id = '" 
+										+ cancelReservationId_str + "';";
+						rs = sqlStmt.executeQuery( sql);				// @5 MySQLに送信
+						
+						if(rs.next()) {
+						// @5 結果表示エリアに表示する文言をセット
+						res = "キャンセルした予約情報[ 予約番号:" + rs.getString( "reservation_id") + "  教室番号：" + rs.getString( "facility_id") 
+								+ "  ユーザーID：" + rs.getString( "user_id") + "  予約実行時間：" + rs.getString( "date").substring( 0,19) 
+								+ "  予約日：" + rs.getString( "day") + "  利用時間：" + rs.getString("start_time").substring( 0,5) + "～" 
+								+ rs.getString( "end_time").substring( 0,5) + " ]";					
+						}
+						rs.next();
+						
+						// @5 選択された予約番号をもとに予約情報を削除する
+						// @5 選択された予約番号の予約情報を削除するクエリを作成
+						sql = "DELETE FROM db_reservation.reservation WHERE reservation_id = '" + cancelReservationId_str +"';";
+						System.out.println( sql);								// @@@@5 デバッグ用SQLをコンソールに表示
+						sqlStmt.executeUpdate( sql);							// @5 SQL文をMySQLに投げる
+						// @5 削除完了
+							
+						
+					} catch (Exception e) {
+						res = "予期しないエラーが発生しました。";
+						e.printStackTrace();
+					}
+					
+				} else {
+					// @5 削除できる予約がない場合
+					res = "キャンセルできる予約がありません。";
+				}
+			} catch (Exception e) {
+				res = "予期しないエラーが発生しました。";
+			}
+			
+			closeDB();													// @5 MySQLとの接続を切る
+			
+		}else {
+			// @5 未ログイン状態の場合
+			res = "ログインして下さい。";
+		}
+		
+		return res;														// @5 結果表示内容をMainFrameに返す。
+	}
+	
+//// @5 予約キャンセル機能用のキャンセルできる予約のIDを取得するメソッド
+	public ArrayList<String> getCancelPossibleReservationId() {
+		ArrayList<String> reservationId = new ArrayList<String>();
+		
+		connectDB();
+		try {
+			// @5 user_idが合致、かつ、予約日が翌日以降の予約情報を取得するクエリを作成
+			String sql = "SELECT * FROM db_reservation.reservation WHERE user_id = '" + reservationUserID + "' AND day > '" + LocalDate.now() + "' ORDER BY day, start_time;";
+			ResultSet	rs = sqlStmt.executeQuery( sql);
+			while( rs.next()) {
+				
+				reservationId.add(rs.getString( "reservation_id"));
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return reservationId;
+	}
+
+	public boolean confirmCancelReservation( CancelReservationDialog dialog, String selectReservationId) {
+		String selectReservation = "";
+		connectDB();
+		try {
+			// @5 選択された予約番号の予約情報を取得するクエリを作成
+			String sql	= "SELECT * FROM db_reservation.reservation WHERE reservation_id = '" 
+							+ selectReservationId + "';";
+			ResultSet rs = sqlStmt.executeQuery( sql);				// @5 MySQLに送信
+			if( rs.next()) {
+				selectReservation = "予約番号：" + rs.getString( "reservation_id") + "　教室番号：" + rs.getString( "facility_id") + "　予約日："
+									+ rs.getString( "day") + "　利用時間" + rs.getString( "start_time").substring( 0,5) + "～" + rs.getString( "end_time").substring( 0,5) ;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// @5 予約キャンセル確認画面を生成
+		ConfirmCancelReservationDialog rd = new ConfirmCancelReservationDialog(dialog, this, selectReservation);
+		// @5 予約キャンセル確認画面を表示
+		rd.setVisible( true);
+		
+		if(rd.canceld) {
+			return false;
+		}
+		return true;
 	}
 }
