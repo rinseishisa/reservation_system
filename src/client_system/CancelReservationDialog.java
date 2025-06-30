@@ -20,11 +20,12 @@ public class CancelReservationDialog extends Dialog implements ActionListener, W
 	
 	// パネル
 	Panel	panelNorth;
-	//Panel	panelCenter;
 	Panel	panelSouth;
 	
+	// 入力用コンポーネント
 	ChoiceFacility choiceReservationId;			// 予約ID選択用ボックス
 	
+	// ボタン
 	Button buttonOK;							// 削除実行ボタン
 	Button buttonCancel;						// キャンセルボタン
 	
@@ -41,11 +42,9 @@ public class CancelReservationDialog extends Dialog implements ActionListener, W
 		reservationId 	= rc.getCancelPossibleReservationId();		// キャンセルできる予約の情報を読み出し、Listに格納
 		choiceReservationId = new ChoiceFacility(reservationId);	// キャンセルする予約選択用コンボボックスのインスタンス生成
 		
-
+//		System.out.println(reservationId);							// テスト用プリント文
 		
-		
-		System.out.println(reservationId);
-		
+		// ボタンの生成
 		buttonOK = new Button("実行");
 		buttonCancel = new Button("キャンセル");
 		
@@ -53,20 +52,20 @@ public class CancelReservationDialog extends Dialog implements ActionListener, W
 		panelNorth	= new Panel();
 		panelSouth	= new Panel();
 		
+		// 上部パネルに予約番号選択コンボボックス追加
 		panelNorth.add( new Label("キャンセルしたい予約を選択　予約番号："));
 		panelNorth.add( choiceReservationId);
 		
+		// 下部パネルにキャンセルボタンと実行ボタンを追加
 		panelSouth.add( buttonCancel);
 		panelSouth.add( new Label("　"));
 		panelSouth.add( buttonOK);
 		
-
 		// ReservationDialogをBorderLayoutに設定し，2つのパネルを追加
 		setLayout( new BorderLayout());
 		add( panelNorth,	BorderLayout.NORTH);
 		add( panelSouth,	BorderLayout.SOUTH);
 		
-
 		// Window Listenerを追加
 		addWindowListener( this);
 		// ボタンにアクションリスナを追加
@@ -123,7 +122,10 @@ public class CancelReservationDialog extends Dialog implements ActionListener, W
 			setVisible( false);
 			dispose();
 		} else if( e.getSource() == buttonOK) {
+			// 実行ボタン押下時、reservationControlのconfirmCancelReservationを呼び出す。
+			// 引数でコンボボックスで選択している予約番号を渡す。戻り値型はboolean
 			if(rc.confirmCancelReservation(null, choiceReservationId.getSelectedItem())) {
+				// 予約キャンセル確認画面で実行ボタン押下時、canceledをfalseにして、ダイアログを閉じる。
 				canceled = false;
 				setVisible( false);
 				dispose();

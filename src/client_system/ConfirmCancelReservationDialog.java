@@ -12,13 +12,15 @@ import java.awt.event.WindowListener;
 
 public class ConfirmCancelReservationDialog extends Dialog implements ActionListener, WindowListener{
 
-	boolean canceld;
-	ReservationControl rc;
+	boolean canceld;							// 新規予約キャンセルステータス（キャンセル：true）
+	ReservationControl rc;						// ReservationControlインスタンス保存用
 	
+	// パネル
 	Panel	panelNorth;
 	Panel	panelCenter;
 	Panel	panelSouth;
 	
+	// ボタン
 	Button	buttonOK;
 	Button	buttonCancel;
 	
