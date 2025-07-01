@@ -479,7 +479,7 @@ public class ReservationControl {
 						if(rs.next()) {
 						// @5 結果表示エリアに表示する文言をセット
 						res = "キャンセルした予約情報[ 予約番号:" + rs.getString( "reservation_id") + "  教室番号：" + rs.getString( "facility_id") 
-								+ "  ユーザーID：" + rs.getString( "user_id") + "  予約実行時間：" + rs.getString( "date").substring( 0,19) 
+								+ "  ユーザID：" + rs.getString( "user_id") + "  予約実行時間：" + rs.getString( "date").substring( 0,19) 
 								+ "  予約日：" + rs.getString( "day") + "  利用時間：" + rs.getString("start_time").substring( 0,5) + "～" 
 								+ rs.getString( "end_time").substring( 0,5) + " ]";					
 						}
