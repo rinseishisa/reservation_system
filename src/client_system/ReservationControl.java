@@ -373,7 +373,7 @@ public class ReservationControl {
 		String	rdate = ryear_str + "-" + rmonth_str + "-" + rday_str;
 		connectDB();													// @3 MySQLに接続
 		try {															// @3
-			String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "' ORDER BY day, start_time;";	// @1
+			String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "' ORDER BY start_time;";	// @1
 			ResultSet	rs = sqlStmt.executeQuery( sql);				// @3 選択された教室IDと同じレコードを抽出
 			if( rs.next()) {											// @3 1件目のレコードを取得
 //				String reservationID	= rs.getString( "reservation_id");		// @3 reservation_id属性データを取得
@@ -417,7 +417,7 @@ public class ReservationControl {
 			try {
 				// System.out.println(LocalDate.now());					// @4 今日の日付をコンソールに表示（テスト用）
 				// @4 sql文作成 条件文：user_idが合致、かつ、予約日が今日以降
-				String sql = "SELECT * FROM db_reservation.reservation WHERE user_id = '" + reservationUserID + "' AND day >= '" + LocalDate.now() +"' ORDER BY start_time;";
+				String sql = "SELECT * FROM db_reservation.reservation WHERE user_id = '" + reservationUserID + "' AND day >= '" + LocalDate.now() +"' ORDER BY day, start_time;";
 				ResultSet	rs = sqlStmt.executeQuery( sql);			// @4 MySQLに送信
 				if(rs.next()) {											// @4 １件目のレコードを取得
 					// @4 結果表示エリアに表示する文言をセット
@@ -454,7 +454,7 @@ public class ReservationControl {
 			try {
 				// @5 ユーザに削除できる予約があるかどうか調べる
 				// @5 ユーザが予約している予約情報を取得するクエリ作成
-				String sql = "SELECT * FROM db_reservation.reservation WHERE user_id = '" + reservationUserID + "' AND day > '" + LocalDate.now() + "';";
+				String sql = "SELECT * FROM db_reservation.reservation WHERE user_id = '" + reservationUserID + "' AND day > '" + LocalDate.now() + "' ORDER BY day, start_time;";
 				ResultSet	rs	= sqlStmt.executeQuery( sql);
 				if(rs.next()) {
 					reservationId.add(rs.getString( "reservation_id"));		// @5 キャンセル可能の予約番号をリストに格納
