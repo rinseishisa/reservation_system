@@ -417,7 +417,7 @@ public class ReservationControl {
 			try {
 				// System.out.println(LocalDate.now());					// @4 今日の日付をコンソールに表示（テスト用）
 				// @4 sql文作成 条件文：user_idが合致、かつ、予約日が今日以降
-				String sql = "SELECT * FROM db_reservation.reservation WHERE user_id = '" + reservationUserID + "' AND day >= '" + LocalDate.now() +"' ORDER BY day, start_time;";
+				String sql = "SELECT * FROM db_reservation.reservation WHERE user_id = '" + reservationUserID + "' AND day >= '" + LocalDate.now() +"' ORDER BY start_time;";
 				ResultSet	rs = sqlStmt.executeQuery( sql);			// @4 MySQLに送信
 				if(rs.next()) {											// @4 １件目のレコードを取得
 					// @4 結果表示エリアに表示する文言をセット
