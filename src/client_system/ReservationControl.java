@@ -539,7 +539,7 @@ public class ReservationControl {
 			if( rs.next()) {
 				// @5 予約キャンセル確認画面に表示する文言をセット
 				selectReservation = "予約番号：" + rs.getString( "reservation_id") + "　教室番号：" + rs.getString( "facility_id") + "　予約日："
-									+ rs.getString( "day") + "　利用時間" + rs.getString( "start_time").substring( 0,5) + "～" + rs.getString( "end_time").substring( 0,5) ;
+									+ rs.getString( "day") + "　利用時間:" + rs.getString( "start_time").substring( 0,5) + "～" + rs.getString( "end_time").substring( 0,5) ;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
