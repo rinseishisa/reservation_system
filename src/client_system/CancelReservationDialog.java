@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CancelReservationDialog extends Dialog implements ActionListener, WindowListener{
 
@@ -30,16 +29,16 @@ public class CancelReservationDialog extends Dialog implements ActionListener, W
 	Button buttonCancel;						// キャンセルボタン
 	
 	
-	public CancelReservationDialog ( Frame owner, ReservationControl rc) {
+	public CancelReservationDialog ( Frame owner, ReservationControl rc, ArrayList<String> reservationId) {
 		// 基底クラスのコンストラクタを呼び出す
 		super( owner, "予約キャンセル", true);
 		
 		this.rc = rc;							// ReservationControlのインスタンスを保存
 		// 初期値キャンセルを設定
 		canceled = true;
-		
-		List<String> reservationId 	= new ArrayList<String>();		// キャンセルできる予約の情報を入れるList
-		reservationId 	= rc.getCancelPossibleReservationId();		// キャンセルできる予約の情報を読み出し、Listに格納
+/////// メソッド呼出から引数で渡すのに変更したため、不要になった宣言とメソッド呼出
+//		List<String> reservationId 	= new ArrayList<String>();		// キャンセルできる予約の情報を入れるList
+//		reservationId 	= rc.getCancelPossibleReservationId();		// キャンセルできる予約の情報を読み出し、Listに格納
 		choiceReservationId = new ChoiceFacility(reservationId);	// キャンセルする予約選択用コンボボックスのインスタンス生成
 		
 //		System.out.println(reservationId);							// テスト用プリント文
